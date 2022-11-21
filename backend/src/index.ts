@@ -1,5 +1,6 @@
-const express = require("express");
-const cors = require("cors");
+import express, {Request, Response} from "express"
+import cors from "cors"
+
 const app = express();
 
 // enable all cors request
@@ -80,7 +81,15 @@ let somedata = [
   },
 ];
 
-app.get("/api/parking", (req, res) => {
+type ParkingResponse = {
+  carParkId: string;
+  lat: number;
+  lon: number;
+  maxCapacity: number;
+  spacesAvailable: number;
+}
+
+app.get("/api/parking", (_: Request, res: Response) => {
   res.json(somedata);
 });
 
