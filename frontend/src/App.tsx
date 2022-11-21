@@ -1,6 +1,7 @@
-import logo from "./logo.svg";
-import "./App.css";
+import React from "react";
 import Parking from "./Parking";
+
+import "./App.css";
 
 function App() {
   return (
