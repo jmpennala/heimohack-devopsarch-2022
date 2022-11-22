@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import useFetch from "react-fetch-hook";
 
 type ParkingData = {
-  name:string
-}
+  name: string;
+};
 
-type ParkingFetchResponse = Array<ParkingData>
+type ParkingFetchResponse = Array<ParkingData>;
 
 function Parking() {
   const { isLoading, error, data } = useFetch<ParkingFetchResponse>(
@@ -16,10 +16,10 @@ function Parking() {
     return <div>loading parking data</div>;
   }
   if (error) {
-    return <div>{error.message}</div>
+    return <div>{error.message}</div>;
   }
 
   return <div>{data && data.map((d) => <div>{d.name}</div>)}</div>;
-};
+}
 
 export default Parking;
