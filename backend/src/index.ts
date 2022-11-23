@@ -1,5 +1,6 @@
 import express, {Request, Response} from "express"
 import cors from "cors"
+import { ApiClient } from "./apiClient";
 
 const app = express();
 
@@ -90,6 +91,7 @@ type ParkingResponse = {
 }
 
 app.get("/api/parking", (_: Request, res: Response) => {
+  ApiClient();
   res.json(somedata);
 });
 
