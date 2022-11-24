@@ -2,6 +2,7 @@ import express, {Request, Response} from "express"
 import cors from "cors"
 import { ApiClient } from "./apiClient";
 import { ParkingResponse } from "./parking-response";
+import { Scheduler } from "./scheduler";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.get("/api/parking", async (_: Request, res: Response) => {
 
 const PORT = 3001;
 app.listen(PORT, () => {
+  const scheduler = new Scheduler();
   console.log(`Server running in port ${PORT}`);
 });
