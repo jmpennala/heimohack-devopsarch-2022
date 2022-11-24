@@ -5,6 +5,7 @@ export type ParkingDataItem = {
     lon: number;
     maxCapacity: number;
     spacesAvailable: number;
+    dateModified: Date;
   }
 
 export type ParkingDataContainer = Array<ParkingDataItem>;
