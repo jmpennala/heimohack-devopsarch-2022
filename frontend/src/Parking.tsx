@@ -5,7 +5,7 @@ import ParkListItem from "./ParkListItem";
 
 function Parking({ parkingData }: { parkingData: Array<ParkingDataItem> }) {
   return (
-    <div>
+    <div id="parkList">
       {parkingData &&
         parkingData.map((parkingDataItem: ParkingDataItem) => ParkListItem({parkingDataItem}))}
     </div>
