@@ -1,4 +1,5 @@
 import {gql, GraphQLClient} from "graphql-request";
+import { ParkingRepository } from "./database";
 import { ParkingResponse } from "./parking-response";
 
 const openApiUrl = "https://api.oulunliikenne.fi/proxy/graphql";
