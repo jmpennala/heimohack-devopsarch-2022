@@ -66,3 +66,15 @@ code {
   align-self: flex-start;
   padding-left: 20px;
 }
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.yellow {
+  color: yellow;
+}

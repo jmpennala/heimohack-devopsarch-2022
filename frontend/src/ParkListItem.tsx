@@ -1,24 +1,22 @@
 import React from "react";
 import { ParkingDataItem } from "./types";
+import { getColorByDataItem } from "./util";
 
 const ParkListItem = ({parkingDataItem}: { parkingDataItem: ParkingDataItem}) => {
-    let spaces = "?/?";
+    let spaces = "?";
 
     if(parkingDataItem.spacesAvailable) {
-        spaces = parkingDataItem.spacesAvailable.toString() + " / ";
+        spaces = parkingDataItem.spacesAvailable.toString();
     }
 
-    if(parkingDataItem.maxCapacity) {
-        spaces += parkingDataItem.maxCapacity.toString();
-    } else {
-        spaces += "?"
-    }
-
+    let color = getColorByDataItem(parkingDataItem);
+    let itemClass = "spaces " + color.toString();
+    
     return (
         <div className="parkListItem">
             <img src="./icons/parking-location-icon.svg" />
             <span className="name">{parkingDataItem.name}</span>
-            <span className="spaces">{spaces}</span>
+            <span className={itemClass}>{spaces}</span>
         </div>
     );
 };
