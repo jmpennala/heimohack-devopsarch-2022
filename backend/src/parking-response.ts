@@ -5,4 +5,5 @@ export type ParkingResponse = {
     lon: number;
     maxCapacity: number;
     spacesAvailable: number;
+    dateModified: object
   }

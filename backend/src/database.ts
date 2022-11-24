@@ -3,6 +3,8 @@ import { ParkingResponse } from "./parking-response";
 let datastorage:Array<ParkingResponse> = [];
 namespace Database {
     export function save(item: ParkingResponse[]) {
+        const time = new Date()
+        item.forEach(i => i.dateModified = time)
         datastorage = item;
         console.log("Data refreshed in storage!")
     }
