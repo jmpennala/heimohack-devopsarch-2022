@@ -44,6 +44,10 @@ code {
   text-align: left;
 }
 
+.parkListItem:nth-child(even) {
+  background-color: #eeeeee;
+}
+
 .parkListItem .name {
   vertical-align: middle;
   align-self: flex-start;
@@ -53,6 +57,7 @@ code {
 .parkListItem .spaces {
   align-self: flex-end;
   padding-right: 20px;
+  margin-left: auto;
 }
 
 .parkListItem img {
@@ -60,13 +65,4 @@ code {
   vertical-align: middle;
   align-self: flex-start;
   padding-left: 20px;
-}
-
-
-.parkListItem .wagon {
-  align-self: flex-end;
-  vertical-align: middle;
-  margin-left: auto;
-  padding-bottom: 8px;
-  padding-right: 10px;
 }
