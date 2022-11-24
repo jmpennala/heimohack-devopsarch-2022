@@ -22,7 +22,7 @@ function App() {
   const f = { b: true };
 
   const { isLoading, error, data } = useFetch<ParkingDataContainer>(
-    "http://192.168.195.243:3001/api/parking"
+    "http://localhost:3001/api/parking"
   );
   const [dataStore, setDataStore] = useState<ParkingDataContainer>([]);
 
