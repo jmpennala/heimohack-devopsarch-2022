@@ -1,0 +1,1349 @@
+type Agency implements Node {
+  id: ID!
+  gtfsId: String!
+  name: String!
+  url: String!
+  timezone: String!
+  lang: String
+  phone: String
+  fareUrl: String
+  routes: [Route]
+  alerts: [Alert]
+}
+
+type Alert implements Node {
+  id: ID!
+  alertHash: Int
+  feed: String
+  agency: Agency
+  route: Route
+  trip: Trip
+  stop: Stop
+  patterns: [Pattern]
+  alertHeaderText: String
+  alertHeaderTextTranslations: [TranslatedString!]!
+  alertDescriptionText: String!
+  alertDescriptionTextTranslations: [TranslatedString!]!
+  alertUrl: String
+  alertUrlTranslations: [TranslatedString!]!
+  alertEffect: AlertEffectType
+  alertCause: AlertCauseType
+  alertSeverityLevel: AlertSeverityLevelType
+  effectiveStartDate: Long
+  effectiveEndDate: Long
+}
+
+enum AlertCauseType {
+  UNKNOWN_CAUSE
+  OTHER_CAUSE
+  TECHNICAL_PROBLEM
+  STRIKE
+  DEMONSTRATION
+  ACCIDENT
+  HOLIDAY
+  WEATHER
+  MAINTENANCE
+  CONSTRUCTION
+  POLICE_ACTIVITY
+  MEDICAL_EMERGENCY
+}
+
+enum AlertEffectType {
+  NO_SERVICE
+  REDUCED_SERVICE
+  SIGNIFICANT_DELAYS
+  DETOUR
+  ADDITIONAL_SERVICE
+  MODIFIED_SERVICE
+  OTHER_EFFECT
+  UNKNOWN_EFFECT
+  STOP_MOVED
+  NO_EFFECT
+}
+
+enum AlertSeverityLevelType {
+  UNKNOWN_SEVERITY
+  INFO
+  WARNING
+  SEVERE
+}
+
+type BikePark implements Node, PlaceInterface {
+  id: ID!
+  bikeParkId: String
+  name: String!
+  spacesAvailable: Int
+  realtime: Boolean
+  lon: Float
+  lat: Float
+  tags: [String]
+  openingHours(dates: [String!]!): [LocalTimeSpanDate]
+}
+
+type BikeRentalStation implements Node, PlaceInterface {
+  id: ID!
+  stationId: String
+  name: String
+  bikesAvailable: Int
+  spacesAvailable: Int
+  state: String
+  realtime: Boolean
+  allowDropoff: Boolean
+  networks: [String]
+  lat: Float
+  lon: Float
+}
+
+enum BikesAllowed {
+  NO_INFORMATION
+  ALLOWED
+  NOT_ALLOWED
+}
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+interface CameraInterface {
+  id: ID!
+  cameraId: String!
+  name: String
+  names: LocalizedNames
+  presets: [CameraPreset]
+  lat: Float
+  lon: Float
+}
+
+type CameraPreset {
+  presetId: String
+  presentationName: String
+  inCollection: Boolean
+  resolution: String
+  imageUrl: String
+  directionCode: String
+  direction: String
+  measuredTime: String
+}
+
+type CarPark implements Node, PlaceInterface {
+  id: ID!
+  carParkId: String
+  name: String!
+  maxCapacity: Int
+  spacesAvailable: Int
+  realtime: Boolean
+  pricing: [CarParkPriceListItem]
+  lon: Float
+  lat: Float
+}
+
+type CarParkPriceListItem {
+  title: LocalizedString!
+  value: LocalizedString!
+}
+
+type Cluster implements Node {
+  id: ID!
+  gtfsId: String!
+  name: String!
+  lat: Float!
+  lon: Float!
+  stops: [Stop!]
+}
+
+type CmsLinkMenu implements Node, CmsMenuInterface {
+  id: ID!
+  menuId: String
+  title: LocalizedString
+  body: LocalizedString
+  items: [CmsMenuItem]
+}
+
+interface CmsMenuInterface {
+  id: ID!
+  menuId: String
+  title: LocalizedString
+  items: [CmsMenuItem]
+}
+
+type CmsMenuItem {
+  id: ID!
+  menuItemId: String
+  title: LocalizedString
+  url: LocalizedString
+  icon: String
+}
+
+type CmsTransportMenu implements Node, CmsMenuInterface {
+  id: ID!
+  menuId: String
+  title: LocalizedString
+  items: [CmsMenuItem]
+}
+
+type Coordinates {
+  lat: Float
+  lon: Float
+}
+
+type debugOutput {
+  totalTime: Long
+  pathCalculationTime: Long
+  precalculationTime: Long
+  renderingTime: Long
+  timedOut: Boolean
+}
+
+type DepartureRow implements Node, PlaceInterface {
+  id: ID!
+  stop: Stop
+  lat: Float
+  lon: Float
+  pattern: Pattern
+  stoptimes(
+    startTime: Long = false
+    timeRange: Int = 86400
+    numberOfDepartures: Int = 1
+    omitNonPickups: Boolean = false
+    omitCanceled: Boolean = true
+  ): [Stoptime]
+}
+
+enum EcoCounterDomain {
+  Oulu_kaupunki
+  Oulu_ELY
+  Oulu_Kapy
+  Oulu_TPM
+}
+
+type EcoCounterSite implements Node, PlaceInterface {
+  id: ID!
+  siteId: String
+  name: String
+  domain: String
+  lat: Float
+  lon: Float
+  userType: Int
+  timezone: String
+  interval: Int
+  sens: Int
+  installationDate: GraphQLDateTime
+  photos: [String]
+  counter: String
+  channels: [EcoCounterSite]
+}
+
+type EcoCounterSiteData {
+  date: GraphQLDateTime
+  counts: Int
+  status: Int
+}
+
+enum EcoCounterSiteDataStep {
+  _15m
+  hour
+  day
+  week
+  month
+  year
+}
+
+type elevationProfileComponent {
+  distance: Float
+  elevation: Float
+}
+
+type fare {
+  type: String
+  currency: String
+  cents: Int
+  components: [fareComponent]
+}
+
+type fareComponent {
+  fareId: String
+  currency: String
+  cents: Int
+  routes: [Route]
+}
+
+scalar FeatureCollectionObject
+
+scalar FeatureObject
+
+type Feed {
+  feedId: String!
+  agencies: [Agency]
+}
+
+enum FilterPlaceType {
+  STOP
+  DEPARTURE_ROW
+  BICYCLE_RENT
+  BIKE_PARK
+  CAR_PARK
+}
+
+type Geometry {
+  length: Int
+  points: Polyline
+}
+
+scalar GeometryInterface
+
+scalar GraphQLDateTime
+
+input InputBanned {
+  routes: String
+  agencies: String
+  trips: String
+  stops: String
+  stopsHard: String
+}
+
+input InputCoordinates {
+  lat: Float!
+  lon: Float!
+  address: String
+  locationSlack: Int
+}
+
+input InputFilters {
+  stops: [String]
+  routes: [String]
+  bikeRentalStations: [String]
+  bikeParks: [String]
+  carParks: [String]
+}
+
+input InputModeWeight {
+  TRAM: Float
+  SUBWAY: Float
+  RAIL: Float
+  BUS: Float
+  FERRY: Float
+  CABLE_CAR: Float
+  GONDOLA: Float
+  FUNICULAR: Float
+  AIRPLANE: Float
+}
+
+input InputPreferred {
+  routes: String
+  agencies: String
+  otherThanPreferredRoutesPenalty: Int
+}
+
+input InputTriangle {
+  safetyFactor: Float
+  slopeFactor: Float
+  timeFactor: Float
+}
+
+input InputUnpreferred {
+  routes: String
+  agencies: String
+  useUnpreferredRoutesPenalty: Int
+}
+
+type Itinerary {
+  startTime: Long
+  endTime: Long
+  duration: Long
+  waitingTime: Long
+  walkTime: Long
+  walkDistance: Float
+  legs: [Leg]!
+  fares: [fare]
+  elevationGained: Float
+  elevationLost: Float
+}
+
+type Leg {
+  startTime: Long
+  endTime: Long
+  departureDelay: Int
+  arrivalDelay: Int
+  mode: Mode
+  duration: Float
+  legGeometry: Geometry
+  agency: Agency
+  realTime: Boolean
+  realtimeState: RealtimeState
+  distance: Float
+  transitLeg: Boolean
+  rentedBike: Boolean
+  from: Place!
+  to: Place!
+  route: Route
+  trip: Trip
+  serviceDate: String
+  interlineWithPreviousLeg: Boolean
+  intermediateStops: [Stop]
+  intermediatePlaces: [Place]
+  intermediatePlace: Boolean
+  steps: [step]
+}
+
+type LocalizedNames {
+  fi: String
+  sv: String
+  en: String
+}
+
+type LocalizedString {
+  fi: String
+  sv: String
+  en: String
+}
+
+type LocalTimeSpan {
+  from: Int!
+  to: Int!
+}
+
+type LocalTimeSpanDate {
+  timeSpans: [LocalTimeSpan]
+  date: String!
+}
+
+enum LocationType {
+  STOP
+  STATION
+  ENTRANCE
+}
+
+scalar Long
+
+type MaintenanceVehicleObservation {
+  vehicleNumber: Int!
+  vehicleType: MaintenanceVehicleType
+  timestamp: GraphQLDateTime
+  contractId: Int
+  direction: Int
+  jobIds: [Int]
+  lat: Float
+  lon: Float
+}
+
+type MaintenanceVehicleRouteEvent implements Node {
+  id: ID!
+  routeEventId: String
+  routeType: MaintenanceVehicleRouteEventType
+  vehicleType: MaintenanceVehicleType
+  measuredTime: GraphQLDateTime
+  contractId: Int
+  jobIds: [Int]
+  geojson: FeatureObject
+  geometryId: String
+  previousRouteEvents(
+    begin: GraphQLDateTime
+    limit: Int
+  ): [MaintenanceVehicleRouteEvent]
+}
+
+enum MaintenanceVehicleRouteEventType {
+  UNKNOWN
+  MOTORISED
+  NON_MOTORISED
+}
+
+enum MaintenanceVehicleType {
+  BICYCLE
+  CAR
+  ROAD_ROLLER
+  EXCAVATOR
+  TRUCK
+  SNOW_PLOW
+  VAN
+  WHEEL_LOADER
+  ROAD_GRADER
+  TRACTOR
+}
+
+enum Mode {
+  AIRPLANE
+  BICYCLE
+  BUS
+  CABLE_CAR
+  CAR
+  FERRY
+  FUNICULAR
+  GONDOLA
+  LEG_SWITCH
+  RAIL
+  SUBWAY
+  TRAM
+  TRANSIT
+  WALK
+}
+
+interface Node {
+  id: ID!
+}
+
+enum OptimizeType {
+  QUICK
+  SAFE
+  FLAT
+  GREENWAYS
+  TRIANGLE
+  TRANSFERS
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Pattern implements Node {
+  id: ID!
+  route: Route!
+  directionId: Int
+  name: String
+  code: String!
+  headsign: String
+  trips: [Trip!]
+  tripsForDate(
+    serviceDay: String
+    serviceDate: String
+  ): [Trip!]
+  stops: [Stop!]
+  geometry: [Coordinates]
+  patternGeometry: Geometry
+  semanticHash: String
+  alerts: [Alert]
+}
+
+enum PickupDropoffType {
+  SCHEDULED
+  NONE
+  CALL_AGENCY
+  COORDINATE_WITH_DRIVER
+}
+
+type Place {
+  name: String
+  vertexType: VertexType
+  lat: Float!
+  lon: Float!
+  arrivalTime: Long!
+  departureTime: Long!
+  stop: Stop
+  stopSequence: Int
+  bikeRentalStation: BikeRentalStation
+  bikePark: BikePark
+  carPark: CarPark
+}
+
+type placeAtDistance implements Node {
+  id: ID!
+  place: PlaceInterface
+  distance: Int
+}
+
+type placeAtDistanceConnection {
+  edges: [placeAtDistanceEdge]
+  pageInfo: PageInfo!
+}
+
+type placeAtDistanceEdge {
+  node: placeAtDistance
+  cursor: String!
+}
+
+interface PlaceInterface {
+  id: ID!
+  lat: Float
+  lon: Float
+}
+
+type Plan {
+  date: Long
+  from: Place!
+  to: Place!
+  itineraries: [Itinerary]!
+  messageEnums: [String]!
+  messageStrings: [String]!
+  debugOutput: debugOutput!
+}
+
+scalar Polyline
+
+enum Qualifier {
+  RENT
+  HAVE
+  PARK
+  KEEP
+  PICKUP
+}
+
+type Query {
+  node(id: ID!): Node
+  feeds: [Feed]
+  agencies: [Agency]
+  ticketTypes: [TicketType]
+  agency(id: String!): Agency
+  stops(
+    ids: [String]
+    feeds: [String!]
+    name: String
+    maxResults: Int
+  ): [Stop]
+  stopsByBbox(
+    minLat: Float!
+    minLon: Float!
+    maxLat: Float!
+    maxLon: Float!
+    agency: String
+    feeds: [String!]
+  ): [Stop]
+  stopsByRadius(
+    lat: Float!
+    lon: Float!
+    radius: Int!
+    agency: String
+    feeds: [String!]
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): stopAtDistanceConnection
+  nearest(
+    lat: Float!
+    lon: Float!
+    maxDistance: Int = 2000
+    maxResults: Int = 20
+    filterByPlaceTypes: [FilterPlaceType]
+    filterByModes: [Mode]
+    filterByIds: InputFilters
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): placeAtDistanceConnection
+  departureRow(id: String!): DepartureRow
+  stop(id: String!): Stop
+  station(id: String!): Stop
+  stations(
+    ids: [String]
+    feeds: [String!]
+    name: String
+    maxResults: Int
+  ): [Stop]
+  routes(
+    ids: [String]
+    feeds: [String]
+    name: String
+    modes: String
+    transportModes: [Mode]
+  ): [Route]
+  route(id: String!): Route
+  trips(feeds: [String]): [Trip]
+  trip(id: String!): Trip
+  fuzzyTrip(
+    route: String!
+    direction: Int = -1
+    date: String!
+    time: Int!
+  ): Trip
+  cancelledTripTimes(
+    feeds: [String]
+    routes: [String]
+    patterns: [String]
+    trips: [String]
+    minDate: String
+    maxDate: String
+    minDepartureTime: Int
+    maxDepartureTime: Int
+    minArrivalTime: Int
+    maxArrivalTime: Int
+  ): [Stoptime]
+  patterns: [Pattern]
+  pattern(id: String!): Pattern
+  clusters: [Cluster]
+  cluster(id: String!): Cluster
+  alerts(
+    feeds: [String!]
+    severityLevel: [AlertSeverityLevelType!]
+    effect: [AlertEffectType!]
+    cause: [AlertCauseType!]
+    route: [String!]
+    stop: [String!]
+  ): [Alert]
+  serviceTimeRange: serviceTimeRange
+  bikeRentalStations(ids: [String]): [BikeRentalStation]
+  bikeRentalStation(id: String!): BikeRentalStation
+  bikeParks: [BikePark]
+  bikePark(id: String!): BikePark
+  carParks(ids: [String]): [CarPark]
+  carPark(id: String!): CarPark
+  viewer: Query
+  plan(
+    date: String
+    time: String
+    from: InputCoordinates
+    to: InputCoordinates
+    fromPlace: String
+    toPlace: String
+    wheelchair: Boolean
+    numItineraries: Int = 3
+    maxWalkDistance: Float
+    maxPreTransitTime: Int
+    maxSlope: Float
+    carParkCarLegWeight: Float
+    itineraryFiltering: Float
+    walkReluctance: Float
+    walkOnStreetReluctance: Float
+    waitReluctance: Float
+    waitAtBeginningFactor: Float
+    walkSpeed: Float
+    bikeSpeed: Float
+    bikeSwitchTime: Int
+    bikeSwitchCost: Int
+    optimize: OptimizeType
+    triangle: InputTriangle
+    arriveBy: Boolean
+    intermediatePlaces: [InputCoordinates]
+    preferred: InputPreferred
+    unpreferred: InputUnpreferred
+    walkBoardCost: Int
+    bikeBoardCost: Int
+    banned: InputBanned
+    transferPenalty: Int
+    batch: Boolean
+    modes: String
+    transportModes: [TransportMode]
+    modeWeight: InputModeWeight
+    allowBikeRental: Boolean
+    boardSlack: Int
+    alightSlack: Int
+    minTransferTime: Int
+    nonpreferredTransferPenalty: Int
+    maxTransfers: Int
+    startTransitStopId: String
+    startTransitTripId: String
+    claimInitialWait: Long
+    reverseOptimizeOnTheFly: Boolean
+    omitCanceled: Boolean = true
+    ignoreRealtimeUpdates: Boolean
+    disableRemainingWeightHeuristic: Boolean
+    locale: String
+    ticketTypes: String
+    allowedTicketTypes: [String]
+    heuristicStepsPerMainStep: Int
+    compactLegsByReversedSearch: Boolean
+    allowedBikeRentalNetworks: [String]
+  ): Plan
+  roadworks(ids: [String]): [Roadwork]
+  roadwork(id: String!): Roadwork
+  cameras(ids: [String]): [CameraInterface]
+  camera(id: String!): CameraInterface
+  weatherCameras(ids: [String]): [WeatherCamera]
+  weatherCamera(id: String!): WeatherCamera
+  trafficCameras(ids: [String]): [TrafficCamera]
+  trafficCamera(id: String!): TrafficCamera
+  trafficDisorders(ids: [String]): [TrafficDisorder]
+  trafficDisorder(id: String!): TrafficDisorder
+  trafficAnnouncements(ids: [String]): [TrafficAnnouncement]
+  trafficAnnouncement(id: String!): TrafficAnnouncement
+  tmsStations(ids: [String]): [TmsStation]
+  tmsStation(id: String!): TmsStation
+  weatherStations(ids: [String]): [WeatherStation]
+  weatherStation(id: String!): WeatherStation
+  roadConditions(ids: [String]): [RoadCondition]
+  roadCondition(id: String!): RoadCondition
+  transportMenu: CmsTransportMenu
+  linkMenu: CmsLinkMenu
+  ecoCounterSites(ids: [String]): [EcoCounterSite]
+  ecoCounterSite(domain: EcoCounterDomain!, id: String!): EcoCounterSite
+  ecoCounterSiteData(
+    domain: EcoCounterDomain!
+    id: String!
+    step: EcoCounterSiteDataStep
+    begin: GraphQLDateTime
+    end: GraphQLDateTime
+  ): [EcoCounterSiteData]
+  maintenanceVehicleRouteEvent(id: String!): MaintenanceVehicleRouteEvent
+  maintenanceVehicleRouteEventByGeometryId(
+    geometryId: String!
+  ): MaintenanceVehicleRouteEvent
+  maintenanceVehicleRouteEvents(
+    routeType: MaintenanceVehicleRouteEventType!
+    begin: GraphQLDateTime
+    end: GraphQLDateTime
+  ): [MaintenanceVehicleRouteEvent]
+  maintenanceVehicleObservations(
+    contractId: Int!
+    begin: GraphQLDateTime
+    end: GraphQLDateTime
+  ): [MaintenanceVehicleObservation]
+  trafficFluencyFeature(id: String!): TrafficFluencyFeature
+  trafficFluencyFeatureCollection(
+    ids: [String]
+  ): TrafficFluencyFeatureCollection
+  variableRoadSigns(ids: [String]): [VariableRoadSign]
+  variableRoadSign(id: String!): VariableRoadSign
+}
+
+enum RealtimeState {
+  SCHEDULED
+  UPDATED
+  CANCELED
+  ADDED
+  MODIFIED
+}
+
+type RoadAddress {
+  roadNumber: Int
+  roadSection: Int
+  distanceFromRoadSectionStart: Int
+  carriagewayCode: Int
+  roadMaintenanceClass: Int
+  contractArea: String
+  contractAreaCode: Int
+  carriageway: String
+}
+
+type RoadCondition implements Node {
+  id: ID!
+  roadConditionId: String
+  measuredTime: GraphQLDateTime
+  roadConditionForecasts: [RoadConditionForecast]
+  geojson: FeatureCollectionObject
+}
+
+type RoadConditionForecast {
+  time: GraphQLDateTime
+  type: String
+  forecastName: String
+  daylight: Boolean
+  roadTemperature: String
+  temperature: String
+  windSpeed: Float
+  windDirection: Int
+  overallRoadCondition: String
+  weatherSymbol: String
+  reliability: String
+  forecastConditionReason: RoadConditionForecastReason
+}
+
+type RoadConditionForecastReason {
+  freezingRainCondition: Boolean
+  frictionCondition: String
+  precipitationCondition: String
+  roadCondition: String
+  visibilityCondition: String
+  windCondition: String
+  winterSlipperiness: Boolean
+}
+
+type Roadwork implements Node {
+  id: ID!
+  roadworkId: String
+  severity: String
+  status: String
+  startTime: GraphQLDateTime
+  endTime: GraphQLDateTime
+  description: LocalizedString
+  constructionWorkType: String
+  roadMaintenanceType: [String]
+  temporarySpeedLimit: Int
+  subjectTypeOfWorks: String
+  geojson: FeatureCollectionObject
+}
+
+type Route implements Node {
+  id: ID!
+  gtfsId: String!
+  agency: Agency
+  shortName: String
+  longName: String
+  mode: Mode
+  type: Int
+  desc: String
+  url: String
+  color: String
+  textColor: String
+  bikesAllowed: BikesAllowed
+  patterns: [Pattern]
+  stops: [Stop]
+  trips: [Trip]
+  alerts: [Alert]
+}
+
+type serviceTimeRange {
+  start: Long
+  end: Long
+}
+
+type step {
+  distance: Float
+  lon: Float
+  lat: Float
+  elevationProfile: [elevationProfileComponent]
+}
+
+type Stop implements Node, PlaceInterface {
+  id: ID!
+  stopTimesForPattern(
+    id: String!
+    startTime: Long = false
+    timeRange: Int = 86400
+    numberOfDepartures: Int = 2
+    omitNonPickups: Boolean = false
+    omitCanceled: Boolean = true
+  ): [Stoptime]
+  gtfsId: String!
+  name: String!
+  lat: Float
+  lon: Float
+  code: String
+  desc: String
+  zoneId: String
+  url: String
+  locationType: LocationType
+  parentStation: Stop
+  wheelchairBoarding: WheelchairBoarding
+  direction: String
+  timezone: String
+  vehicleType: Int
+  vehicleMode: Mode
+  platformCode: String
+  cluster: Cluster
+  stops: [Stop]
+  routes: [Route!]
+  patterns: [Pattern]
+  transfers(maxDistance: Int): [stopAtDistance]
+  stoptimesForServiceDate(
+    date: String
+    omitNonPickups: Boolean = false
+    omitCanceled: Boolean = false
+  ): [StoptimesInPattern]
+  stoptimesForPatterns(
+    startTime: Long = false
+    timeRange: Int = 86400
+    numberOfDepartures: Int = 5
+    omitNonPickups: Boolean = false
+    omitCanceled: Boolean = true
+  ): [StoptimesInPattern]
+  stoptimesWithoutPatterns(
+    startTime: Long = false
+    timeRange: Int = 86400
+    numberOfDepartures: Int = 5
+    omitNonPickups: Boolean = false
+    omitCanceled: Boolean = true
+  ): [Stoptime]
+  alerts: [Alert]
+}
+
+type stopAtDistance implements Node {
+  id: ID!
+  stop: Stop
+  distance: Int
+}
+
+type stopAtDistanceConnection {
+  edges: [stopAtDistanceEdge]
+  pageInfo: PageInfo!
+}
+
+type stopAtDistanceEdge {
+  node: stopAtDistance
+  cursor: String!
+}
+
+type Stoptime {
+  stop: Stop
+  scheduledArrival: Int
+  realtimeArrival: Int
+  arrivalDelay: Int
+  scheduledDeparture: Int
+  realtimeDeparture: Int
+  departureDelay: Int
+  timepoint: Boolean
+  realtime: Boolean
+  realtimeState: RealtimeState
+  pickupType: PickupDropoffType
+  dropoffType: PickupDropoffType
+  serviceDay: Long
+  trip: Trip
+  stopHeadsign: String
+    @deprecated(reason: "Use headsign instead, will be removed in the future")
+  headsign: String
+  stopSequence: Int
+}
+
+type StoptimesInPattern {
+  pattern: Pattern
+  stoptimes: [Stoptime]
+}
+
+type TicketType implements Node {
+  id: ID!
+  fareId: ID!
+  price: Float
+  currency: String
+  zones: [String!]
+}
+
+type TmsSensorValue {
+  id: String
+  roadStationId: Int
+  name: String
+  shortName: String
+  sensorValue: Int
+  sensorUnit: String
+}
+
+type TmsStation implements Node, PlaceInterface {
+  id: ID!
+  tmsStationId: String
+  roadStationId: Int
+  tmsNumber: Int
+  name: String
+  collectionInterval: Int
+  collectionStatus: String
+  municipality: String
+  municipalityCode: String
+  province: String
+  provinceCode: String
+  names: LocalizedNames
+  roadAddress: RoadAddress
+  liviId: String
+  country: String
+  startTime: String
+  repairMaintenanceTime: String
+  annualMaintenanceTime: String
+  state: String
+  coordinatesETRS89: [Int]
+  direction1Municipality: String
+  direction1MunicipalityCode: Int
+  direction2Municipality: String
+  calculatorDeviceType: String
+  stationSensors: [Int]
+  tmsStationType: String
+  measuredTime: String
+  sensorValues: [TmsSensorValue]
+  lon: Float
+  lat: Float
+}
+
+type TrafficAnnouncement implements Node, TrafficDisruptionInterface {
+  id: ID!
+  announcementId: String!
+  description: LocalizedString
+  severity: TrafficDisruptionSeverity
+  status: TrafficDisruptionValidityStatus
+  startTime: GraphQLDateTime
+  endTime: GraphQLDateTime
+  geojson: FeatureCollectionObject
+  title: LocalizedString
+  modesOfTransport: [TrafficDisruptionModeOfTransport]
+  class: [TrafficDisruptionClass]
+  trafficDirection: String
+  trafficDirectionFreeText: LocalizedString
+  temporarySpeedLimit: Int
+  duration: String
+  additionalInfo: String
+  detour: FeatureCollectionObject
+  oversizeLoad: String
+  vehicleSizeLimit: String
+  url: String
+  imageUrls: [String]
+}
+
+type TrafficCamera implements Node, PlaceInterface, CameraInterface {
+  id: ID!
+  cameraId: String!
+  name: String
+  names: LocalizedNames
+  presets: [CameraPreset]
+  lon: Float
+  lat: Float
+}
+
+type TrafficDisorder implements Node, TrafficDisruptionInterface {
+  id: ID!
+  disorderId: String!
+  description: LocalizedString
+  severity: TrafficDisruptionSeverity
+  status: TrafficDisruptionValidityStatus
+  startTime: GraphQLDateTime
+  endTime: GraphQLDateTime
+  geojson: FeatureCollectionObject
+}
+
+type TrafficDisruptionClass {
+  class: String
+  subclass: String
+}
+
+enum TrafficDisruptionDirection {
+  ALL_DIRECTIONS
+  BOTH_WAYS
+  CLOCKWISE
+  ANTICLOCKWISE
+  INNER_RING
+  OUTER_RING
+  NORTH_BOUND
+  NORTH_WEST_BOUND
+  NORTH_EAST_BOUND
+  SOUTH_BOUND
+  SOUTH_WEST_BOUND
+  SOUTH_EAST_BOUND
+  WEST_BOUND
+  EAST_BOUND
+  INBOUND_TOWARDS_TOW
+  OUTBOUND_FROM_TOWN
+  UNKNOWN
+  OPPOSITE
+  OTHER
+}
+
+interface TrafficDisruptionInterface {
+  id: ID!
+  description: LocalizedString
+  severity: TrafficDisruptionSeverity
+  status: TrafficDisruptionValidityStatus
+  startTime: GraphQLDateTime
+  endTime: GraphQLDateTime
+  geojson: FeatureCollectionObject
+}
+
+enum TrafficDisruptionModeOfTransport {
+  PUBLIC_TRANSPORT
+  CAR
+  BICYCLE
+  PEDESTRIAN
+}
+
+enum TrafficDisruptionSeverity {
+  HIGHEST
+  HIGH
+  MEDIUM
+  LOW
+  LOWEST
+  NONE
+  UNKNOWN
+}
+
+enum TrafficDisruptionValidityStatus {
+  DEFINED_BY_VALIDITY_TIME_SPEC
+  ACTIVE
+  SUSPENDED
+}
+
+enum TrafficFlow {
+  TRAFFIC_FLOW_UNKNOWN
+  TRAFFIC_FLOW_NORMAL
+  TRAFFIC_HEAVIER_THAN_NORMAL
+  TRAFFIC_MUCH_HEAVIER_THAN_NORMAL
+}
+
+type TrafficFluencyFeature {
+  type: String
+  geometry: GeometryInterface
+  properties: TrafficFluencyFeatureProperties
+}
+
+type TrafficFluencyFeatureCollection {
+  type: String
+  features: [TrafficFluencyFeature]!
+}
+
+type TrafficFluencyFeatureProperties {
+  id: String
+  type: TrafficFluencySourceType
+  measuredTime: GraphQLDateTime
+  trafficFlow: TrafficFlow
+  name: String
+  trafficDirection: Int
+  trafficDirectionName: String
+  speedLimit: Int
+  averageSpeed: Int
+  detName: String
+  giveWayDelay: Float
+  maxWaitCycles: Float
+}
+
+enum TrafficFluencySourceType {
+  TmsStation
+  TpmKpi
+}
+
+type TranslatedString {
+  text: String
+  language: String
+}
+
+input TransportMode {
+  mode: Mode!
+  qualifier: Qualifier
+}
+
+type Trip implements Node {
+  id: ID!
+  gtfsId: String!
+  route: Route!
+  serviceId: String
+  activeDates: [String]
+  tripShortName: String
+  tripHeadsign: String
+  routeShortName: String
+  directionId: String
+  blockId: String
+  shapeId: String
+  wheelchairAccessible: WheelchairBoarding
+  bikesAllowed: BikesAllowed
+  pattern: Pattern
+  stops: [Stop!]!
+  semanticHash: String!
+  stoptimes: [Stoptime]
+  departureStoptime(serviceDate: String): Stoptime
+  arrivalStoptime(serviceDate: String): Stoptime
+  stoptimesForDate(
+    serviceDay: String
+    serviceDate: String
+  ): [Stoptime]
+  geometry: [[Float]]
+  tripGeometry: Geometry
+  alerts: [Alert]
+}
+
+type VariableRoadSign implements Node, PlaceInterface {
+  id: ID!
+  roadSignId: String
+  type: VariableRoadSignType
+  direction: VariableRoadSignDirection
+  carriageway: VariableRoadSignPlacement
+  displayValue: String
+  effectDate: GraphQLDateTime
+  cause: VariableRoadSignCause
+  severity: VariableRoadSignSeverity
+  reliability: VariableRoadSignReliability
+  roadAddress: String
+  lat: Float
+  lon: Float
+  textRows: [VariableRoadSignTextRow]
+}
+
+enum VariableRoadSignCause {
+  AUTO
+  MANUAL
+}
+
+enum VariableRoadSignDirection {
+  INCREASING
+  DECREASING
+}
+
+enum VariableRoadSignPlacement {
+  SINGLE
+  RIGHT
+  LEFT
+  BETWEEN
+}
+
+enum VariableRoadSignReliability {
+  NORMAL
+  DISCONNECTED
+  MALFUNCTION
+}
+
+enum VariableRoadSignSeverity {
+  HIGH
+  MEDIUM
+  LOW
+  UNKNOWN
+}
+
+type VariableRoadSignTextRow {
+  screen: Int
+  rowNumber: Int
+  text: String
+}
+
+enum VariableRoadSignType {
+  SPEEDLIMIT
+  WARNING
+  INFORMATION
+}
+
+enum VertexType {
+  NORMAL
+  TRANSIT
+  BIKEPARK
+  BIKESHARE
+  PARKANDRIDE
+}
+
+type WeatherCamera implements Node, PlaceInterface, CameraInterface {
+  id: ID!
+  cameraId: String!
+  roadStationId: Int
+  nearestWeatherStationId: Int
+  name: String
+  names: LocalizedNames
+  cameraType: String
+  collectionInterval: Int
+  collectionStatus: String
+  startTime: String
+  repairMaintenanceTime: String
+  annualMaintenanceTime: String
+  state: String
+  roadAddress: RoadAddress
+  presets: [CameraPreset]
+  lon: Float
+  lat: Float
+}
+
+type WeatherSensorValue {
+  id: String
+  roadStationId: Int
+  name: String
+  shortName: String
+  sensorValue: Float
+  sensorUnit: String
+  sensorValueDescriptionFi: String
+  sensorValueDescriptionEn: String
+}
+
+type WeatherStation implements Node, PlaceInterface {
+  id: ID!
+  weatherStationId: String
+  roadStationId: Int
+  name: String
+  collectionInterval: Int
+  collectionStatus: String
+  municipality: String
+  municipalityCode: String
+  province: String
+  provinceCode: String
+  names: LocalizedNames
+  roadAddress: RoadAddress
+  liviId: String
+  country: String
+  startTime: String
+  repairMaintenanceTime: String
+  annualMaintenanceTime: String
+  state: String
+  coordinatesETRS89: [Int]
+  master: Boolean
+  stationSensors: [Int]
+  weatherStationType: String
+  measuredTime: GraphQLDateTime
+  sensorValues: [WeatherSensorValue]
+  lon: Float
+  lat: Float
+}
+
+enum WheelchairBoarding {
+  NO_INFORMATION
+  POSSIBLE
+  NOT_POSSIBLE
+}
+

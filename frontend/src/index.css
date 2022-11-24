@@ -19,3 +19,29 @@ code {
   bottom: 0;
   width: 100%;
 }
+
+.parkListItem {
+  font-size: 25px;
+  width: 100%;
+  display: flex; 
+  text-align: left;
+}
+
+.parkListItem .name {
+  vertical-align: middle;
+  align-self: flex-start;
+  padding-left: 20px;
+}
+
+.parkListItem .spaces {
+  align-self: flex-end;
+  margin-left: auto;
+  padding-right: 20px;
+}
+
+.parkListItem img {
+  max-width: 30px;
+  vertical-align: middle;
+  align-self: flex-start;
+  padding-left: 20px;
+}
