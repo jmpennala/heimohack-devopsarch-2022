@@ -1,13 +1,15 @@
 import { CronJob } from 'cron';
 import { ApiClient } from './apiClient';
+import { ParkingRepository } from './database';
 
 
 export class Scheduler {
     cronJob: CronJob;
 
-    constructor() {
+    constructor(parkingRepo: ParkingRepository) {
         this.cronJob = new CronJob('0 */1 * * * *', async () => {
-            await ApiClient();
+            const data = await ApiClient();
+            parkingRepo.save(data)
         });
    
    
