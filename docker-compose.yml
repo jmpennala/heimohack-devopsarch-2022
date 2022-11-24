@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+  backend:
+    image: node:16.18
+    ports:
+      - 127.0.0.1:3001:3001
+    volumes:
+      - ./backend/:/app/
+    command: sh -c "cd /app && npm install && npm run dev"
+    environment:
+      - npm_config_cache=/tmp
+  frontend:
+    image: node:16.18
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - ./frontend/:/app/
+    command: sh -c "cd /app && npm install && npm start"
+    environment:
+      - npm_config_cache=/tmp
