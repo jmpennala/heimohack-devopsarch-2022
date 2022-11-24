@@ -4,7 +4,9 @@ import { ApiClient } from "./apiClient";
 import { ParkingResponse } from "./parking-response";
 import { Scheduler } from "./scheduler";
 import { ParkingRepository } from "./database";
-import { inherits } from "util";
+import { Coordinate } from "tsgeo/Coordinate";
+import { Vincenty }   from "tsgeo/Distance/Vincenty";
+
 
 const app = express();
 
@@ -19,8 +21,18 @@ app.get("/api/parking", async (_: Request, res: Response) => {
   .catch(reason => console.log(reason))
   .finally(() => "DONE");
    */
-
   data = await parkingRepo.findAll()
+  data = data.filter((item: ParkingResponse) => {
+    let parkLocation = new Coordinate(item.lat, item.lon);
+    let referenceLocation = new Coordinate(65.01244,25.46810);
+    let distance = parkLocation.getDistance(referenceLocation, new Vincenty);
+    if (distance > 500)  {
+      return false;
+    }
+
+    return true;
+  })
+
   res.json(data);
 });
 
@@ -38,3 +50,4 @@ app.listen(PORT, () => {
   const scheduler = new Scheduler(parkingRepo);
   console.log(`Server running in port ${PORT}`);
 });
+
