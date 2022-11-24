@@ -19,7 +19,7 @@ const outerBounds = [
   [52.505, 29.09],
 ];
 
-const ouluLatLong: LatLngTuple = [65.012615, 25.471453];
+const ouluLatLong: LatLngTuple = [65.01251024571452, 25.46799864033924];
 const fillBlueOptions = { fillColor: "blue" };
 
 const circleData: Array<LatLngTuple> = [
@@ -77,7 +77,7 @@ const ParkingMap = ({
 
   return (
     <div id="map">
-      <MapContainer center={[65.012615, 25.471453]} zoom={13}>
+      <MapContainer center={ouluLatLong} zoom={13}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {data?.map((d) => (
           <Circle
@@ -94,7 +94,7 @@ const ParkingMap = ({
             </Tooltip>
           </Circle>
         ))}
-        <Marker position={[65.012615, 25.471453]}></Marker>
+        <Marker position={ouluLatLong}></Marker>
       </MapContainer>
     </div>
   );
