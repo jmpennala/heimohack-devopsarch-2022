@@ -1,7 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { number } from "prop-types";
 import { LatLngTuple } from "leaflet";
-import { TileLayer, MapContainer, Marker, Circle } from "react-leaflet";
+import {
+  TileLayer,
+  MapContainer,
+  Marker,
+  Circle,
+  Tooltip,
+} from "react-leaflet";
 import { ParkingDataItem } from "./types";
 
 const innerBounds = [
@@ -32,6 +38,10 @@ function getColorByDataItem(item: ParkingDataItem) {
   // green 25-100% free
   // yellow 10-24
   // red 0-9
+  // gray unknown
+
+  if (!item.spacesAvailable) return "gray";
+
   const percentageFree = (item.spacesAvailable / item.maxCapacity) * 100.0;
   if (percentageFree >= 25.0) {
     return "green";
@@ -43,8 +53,11 @@ function getColorByDataItem(item: ParkingDataItem) {
 }
 
 type DataItem = {
+  name: string;
   coords: LatLngTuple;
   color: string;
+  available: number;
+  capacity: number;
 };
 
 const ParkingMap = ({
@@ -54,7 +67,13 @@ const ParkingMap = ({
 }) => {
   const data: Array<DataItem> = parkingData
     ?.filter((p) => p.lat && p.lon)
-    .map((p) => ({ coords: [p.lat, p.lon], color: getColorByDataItem(p) }));
+    .map((p) => ({
+      name: p.name,
+      coords: [p.lat, p.lon],
+      color: getColorByDataItem(p),
+      available: p.spacesAvailable,
+      capacity: p.maxCapacity,
+    }));
 
   return (
     <div id="map">
@@ -69,7 +88,11 @@ const ParkingMap = ({
               fillOpacity: 0.4,
             }}
             radius={80}
-          />
+          >
+            <Tooltip sticky>
+              {d.name} {d.available && `${d.available} / ${d.capacity}`}
+            </Tooltip>
+          </Circle>
         ))}
         <Marker position={[65.012615, 25.471453]}></Marker>
       </MapContainer>
