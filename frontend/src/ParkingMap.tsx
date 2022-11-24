@@ -33,11 +33,15 @@ const ParkingMap = ({
 }: {
   parkingData: Array<ParkingDataItem>;
 }) => {
+  const data: Array<LatLngTuple> = parkingData
+    ?.filter((p) => p.lat && p.lon)
+    .map((p) => [p.lat, p.lon]);
+
   return (
     <div id="map">
       <MapContainer center={[65.012615, 25.471453]} zoom={13}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {circleData.map((d) => (
+        {data?.map((d) => (
           <Circle center={d} pathOptions={fillBlueOptions} radius={200} />
         ))}
         <Marker position={[65.012615, 25.471453]}></Marker>
