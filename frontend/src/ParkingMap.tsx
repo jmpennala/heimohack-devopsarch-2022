@@ -60,7 +60,7 @@ const ParkingMap = ({
 
   return (
     <div id="map">
-      <MapContainer center={ouluLatLong} zoom={13}>
+      <MapContainer center={ouluLatLong} zoom={15}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {data?.map((d) => (
           <Circle
