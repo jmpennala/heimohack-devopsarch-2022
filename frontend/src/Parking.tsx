@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from "react";
-import useFetch from "react-fetch-hook";
+import PropTypes from "prop-types";
+import { ParkingDataContainer, ParkingDataItem } from "./types";
 
-type ParkingData = {
-  name: string;
-};
-
-type ParkingFetchResponse = Array<ParkingData>;
-
-function Parking() {
-  const { isLoading, error, data } = useFetch<ParkingFetchResponse>(
-    "http://localhost:3001/api/parking"
+function Parking({ parkingData }: { parkingData: Array<ParkingDataItem> }) {
+  return (
+    <div>
+      {parkingData &&
+        parkingData.map((d: ParkingDataItem) => <div>{d.name}</div>)}
+    </div>
   );
-
-  if (isLoading) {
-    return <div>loading parking data</div>;
-  }
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
-  return <div>{data && data.map((d) => <div>{d.name}</div>)}</div>;
 }
+
+Parking.propTypes = {
+  parkingData: PropTypes.object,
+};
 
 export default Parking;
